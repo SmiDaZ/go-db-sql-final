@@ -23,19 +23,13 @@ func (s ParcelStore) Add(p Parcel) (int, error) {
 		return 0, err
 	}
 
-	count, err := res.RowsAffected()
+	id, err := res.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
-	if count != 0 {
-		id, err := res.LastInsertId()
-		if err != nil {
-			return 0, err
-		}
-		return int(id), nil
-	}
+	return int(id), nil
+
 	// верните идентификатор последней добавленной записи
-	return 0, nil
 }
 
 func (s ParcelStore) Get(number int) (Parcel, error) {
@@ -49,7 +43,7 @@ func (s ParcelStore) Get(number int) (Parcel, error) {
 
 	err := row.Scan(&p.Client, &p.Status, &p.Address, &p.CreatedAt)
 	if err != nil {
-		return p, err
+		return Parcel{}, err
 	}
 	return p, nil
 }
@@ -75,6 +69,10 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 		}
 
 		res = append(res, p)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return res, nil
