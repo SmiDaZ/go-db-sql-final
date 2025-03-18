@@ -53,11 +53,8 @@ func TestAddGetDelete(t *testing.T) {
 	lastParcel, err := store.Get(id)
 
 	require.NoError(t, err)
-	assert.Equal(t, lastParcel.Number, parcel.Number)
-	assert.Equal(t, lastParcel.Client, parcel.Client)
-	assert.Equal(t, lastParcel.Address, parcel.Address)
-	assert.Equal(t, lastParcel.Status, parcel.Status)
-	assert.Equal(t, lastParcel.CreatedAt, parcel.CreatedAt)
+	parcel.Number = id
+	assert.Equal(t, lastParcel, parcel)
 
 	// delete
 	// удалите добавленную посылку, убедитесь в отсутствии ошибки
